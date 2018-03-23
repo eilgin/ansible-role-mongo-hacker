@@ -1,3 +1,9 @@
 ---
-__user: "{{ user | default(remote_user) }}"
-__mongo_hacker_dir: "{{ mongo_hacker_dir | default('.mongo-hacker') }}"
+mongo_rc: ".mongorc.js"
+__user: "{{ user |
+            default(ansible_user, true) |
+            default(ansible_env.SUDO_USER, true) |
+            default(ansible_env.USER, true) |
+            default(ansible_user_id, true)
+         }}"
+__mongo_hacker_dir: "{{ mongo_hacker_dir | default('.mongo-hacker', true) }}"

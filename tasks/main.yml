@@ -18,6 +18,13 @@
     path: "{{ __homedir.stdout }}"
   register: __homedir_info
 
+- name: Ensure that mongo rc file is present
+  become: true
+  become_user: "{{ __user }}"
+  stat:
+    path: "{{ __homedir.stdout }}/{{ mongo_rc }}"
+  register: __mongo_rc_info
+
 - name: Install the mongo hacker script
   when:
     - __homedir.stdout != ""
@@ -32,10 +39,11 @@
         dest: "{{ __mongo_hacker_path }}"
       register: repo_status
 
-    # if both commits "before" and "after" update are the same
+    # if the mongo rc file is present
+    # or if both commits "before" and "after" update are the same
     # then we don't need to re-install the script
     - name: Copy the script
-      when: "{{ repo_status.before }} != {{ repo_status.after }}"
+      when: __mongo_rc_info.stat.isreg is undefined or repo_status.before != repo_status.after
       shell: make install
       args:
         chdir: "{{ __mongo_hacker_path }}"

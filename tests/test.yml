@@ -1,4 +1,6 @@
 ---
 - hosts: all
   roles:
+    - manala.make
+    - geerlingguy.git
     - mongo-hacker
