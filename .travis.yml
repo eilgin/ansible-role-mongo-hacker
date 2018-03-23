@@ -24,6 +24,11 @@ script:
   # Run container detached, with our role mounted inside.
   - 'docker run --detach --volume="${PWD}":/etc/ansible/roles/mongo-hacker:ro ${run_opts} geerlingguy/docker-${distro}-ansible:latest "${init}" > "${container_id}"'
 
+  # Install dependencies (git)
+  - >
+    docker exec --tty "$(cat ${container_id})" env TERM=xterm
+    ansible-galaxy install -r /etc/ansible/roles/mongo-hacker/tests/requirements.yml
+
   # Run the role/playbook with ansible-playbook.
   - >
     docker exec --tty "$(cat ${container_id})" env TERM=xterm
@@ -42,7 +47,7 @@ script:
     || (echo 'Idempotence test: fail' && exit 1)
 
   # Ensure that the mongo hacker script is installed.
-  - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm ls -l ~/.mongorc.js'
+  - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm bash -c "ls -l ~/.mongorc.js"'
 
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/
