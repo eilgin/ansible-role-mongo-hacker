@@ -1,2 +1,41 @@
 ---
-# tasks file for mongo-hacker
+- name: Get the homedir path
+  become: true
+  become_user: "{{ __user }}"
+  shell: "echo $HOME"
+  register: __homedir
+  changed_when: false
+  check_mode: no
+
+- name: Set the install path
+  set_fact:
+    __mongo_hacker_path: "{{ __homedir.stdout }}/{{ __mongo_hacker_dir }}"
+
+- name: Ensure that install path can be R/W by the user
+  become: true
+  become_user: "{{ __user }}"
+  stat:
+    path: "{{ __homedir.stdout }}"
+  register: __homedir_info
+
+- name: Install the mongo hacker script
+  when:
+    - __homedir.stdout != ""
+    - __homedir_info.stat.readable == true
+    - __homedir_info.stat.writeable == true
+  become: true
+  become_user: "{{ __user }}"
+  block:
+    - name: Check if the repository was already cloned
+      git:
+        repo: 'https://github.com/TylerBrock/mongo-hacker.git'
+        dest: "{{ __mongo_hacker_path }}"
+      register: repo_status
+
+    # if both commits "before" and "after" update are the same
+    # then we don't need to re-install the script
+    - name: Copy the script
+      when: "{{ repo_status.before }} != {{ repo_status.after }}"
+      shell: make install
+      args:
+        chdir: "{{ __mongo_hacker_path }}"
