@@ -1,17 +1,14 @@
 # Ansible Role: mongo-hacker
 
-[![Build Status](https://travis-ci.org/nomadeducation/ansible-role-mongo-hacker.svg?branch=master)](https://travis-ci.org/nomadeducation/ansible-role-mongo-hacker)
-
-This will install the latest mongodb shell enhancements in your home directory.
+This will install the latest mongodb shell enhancements in the home directory of the defined user.
 
 ## Requirements
 
-
-Requires git on the managed machine.
+Requires git on the host machine. See the [limitations](https://github.com/TylerBrock/mongo-hacker#warnings) of this script.
 
 ## Role Variables
 
-Not yet.
+- `user`: define where the script will be installed (default is `remote_user`).
 
 ## Dependencies
 
@@ -31,4 +28,4 @@ MIT
 
 ## Author Information
 
-Nomad Education
+eilgin
