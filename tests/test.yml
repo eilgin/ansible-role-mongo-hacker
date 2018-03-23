@@ -1,4 +1,6 @@
 ---
 - hosts: all
   roles:
+    - wtanaka.make
+    - geerlingguy.git
     - mongo-hacker
