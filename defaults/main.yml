@@ -1,0 +1,3 @@
+---
+__user: "{{ user | default(remote_user) }}"
+__mongo_hacker_dir: "{{ mongo_hacker_dir | default('.mongo-hacker') }}"
