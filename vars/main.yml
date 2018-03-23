@@ -1,2 +1,3 @@
 ---
-# vars file for mongo-hacker
+user: ""
+mongo_hacker_dir: ""
